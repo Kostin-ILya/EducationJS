@@ -1789,10 +1789,10 @@ a:active {
 .show {
   display: block !important;
 }
-.show_inline {
+.show-inline {
   display: inline !important;
 }
-.show_flex {
+.show-flex {
   display: flex !important;
 }
 .hide {
