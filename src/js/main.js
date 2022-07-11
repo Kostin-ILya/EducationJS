@@ -1,11 +1,10 @@
 import MainSlider from './modules/sliders/slider-main'
 import MiniSlider from './modules/sliders/slider-mini'
 import VideoPlayer from './modules/videoPlayer'
+import Difference from './modules/difference'
 
 window.addEventListener('DOMContentLoaded', () => {
   const mainSlider = new MainSlider({ container: '.page', nextBtns: '.next' })
-  mainSlider.render()
-
   const showUpSlider = new MiniSlider({
     container: '.showup__content-slider',
     next: '.showup__next',
@@ -13,8 +12,6 @@ window.addEventListener('DOMContentLoaded', () => {
     activeClass: 'card-active',
     animateElements: true,
   })
-  showUpSlider.render()
-
   const modulesSlider = new MiniSlider({
     container: '.modules__content-slider',
     next: '.slick-next',
@@ -23,16 +20,21 @@ window.addEventListener('DOMContentLoaded', () => {
     animateElements: true,
     autoplay: true,
   })
-  modulesSlider.render()
-
   const feedSlider = new MiniSlider({
     container: '.feed__slider-container',
     next: '.feed__slider .slick-next',
     prev: '.feed__slider .slick-prev',
     activeClass: 'feed__item-active',
   })
+  mainSlider.render()
+  showUpSlider.render()
+  modulesSlider.render()
   feedSlider.render()
 
-  const player = new VideoPlayer('.play', '.overlay')
-  player.render()
+  new VideoPlayer('.play', '.overlay').render()
+
+  const oldOfficer = new Difference('.officerold', '.officer__card-item', '.plus')
+  const newOfficer = new Difference('.officernew', '.officer__card-item', '.plus')
+  oldOfficer.render()
+  newOfficer.render()
 })
