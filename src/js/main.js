@@ -4,7 +4,16 @@ import VideoPlayer from './modules/videoPlayer'
 import Difference from './modules/difference'
 
 window.addEventListener('DOMContentLoaded', () => {
-  const mainSlider = new MainSlider({ container: '.page', nextBtns: '.next' })
+  const mainPageSlider = new MainSlider({
+    container: '.page',
+    sideNextBtns: '.sidecontrol__controls .next',
+  })
+  const secondPageSlider = new MainSlider({
+    container: '.moduleapp',
+    sideNextBtns: '.sidecontrol__controls .next',
+    prevBtn: '.prevmodule',
+    nextBtn: '.nextmodule',
+  })
   const showUpSlider = new MiniSlider({
     container: '.showup__content-slider',
     next: '.showup__next',
@@ -26,15 +35,16 @@ window.addEventListener('DOMContentLoaded', () => {
     prev: '.feed__slider .slick-prev',
     activeClass: 'feed__item-active',
   })
-  mainSlider.render()
+  mainPageSlider.render()
+  secondPageSlider.render()
   showUpSlider.render()
   modulesSlider.render()
   feedSlider.render()
-
-  new VideoPlayer('.play', '.overlay').render()
 
   const oldOfficer = new Difference('.officerold', '.officer__card-item', '.plus')
   const newOfficer = new Difference('.officernew', '.officer__card-item', '.plus')
   oldOfficer.render()
   newOfficer.render()
+
+  new VideoPlayer('.play', '.overlay').render()
 })

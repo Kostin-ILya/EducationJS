@@ -2461,9 +2461,15 @@ __webpack_require__.r(__webpack_exports__);
 
 
 window.addEventListener('DOMContentLoaded', () => {
-  const mainSlider = new _modules_sliders_slider_main__WEBPACK_IMPORTED_MODULE_0__["default"]({
+  const mainPageSlider = new _modules_sliders_slider_main__WEBPACK_IMPORTED_MODULE_0__["default"]({
     container: '.page',
-    nextBtns: '.next'
+    sideNextBtns: '.sidecontrol__controls .next'
+  });
+  const secondPageSlider = new _modules_sliders_slider_main__WEBPACK_IMPORTED_MODULE_0__["default"]({
+    container: '.moduleapp',
+    sideNextBtns: '.sidecontrol__controls .next',
+    prevBtn: '.prevmodule',
+    nextBtn: '.nextmodule'
   });
   const showUpSlider = new _modules_sliders_slider_mini__WEBPACK_IMPORTED_MODULE_1__["default"]({
     container: '.showup__content-slider',
@@ -2486,15 +2492,16 @@ window.addEventListener('DOMContentLoaded', () => {
     prev: '.feed__slider .slick-prev',
     activeClass: 'feed__item-active'
   });
-  mainSlider.render();
+  mainPageSlider.render();
+  secondPageSlider.render();
   showUpSlider.render();
   modulesSlider.render();
   feedSlider.render();
-  new _modules_videoPlayer__WEBPACK_IMPORTED_MODULE_2__["default"]('.play', '.overlay').render();
   const oldOfficer = new _modules_difference__WEBPACK_IMPORTED_MODULE_3__["default"]('.officerold', '.officer__card-item', '.plus');
   const newOfficer = new _modules_difference__WEBPACK_IMPORTED_MODULE_3__["default"]('.officernew', '.officer__card-item', '.plus');
   oldOfficer.render();
   newOfficer.render();
+  new _modules_videoPlayer__WEBPACK_IMPORTED_MODULE_2__["default"]('.play', '.overlay').render();
 });
 
 /***/ }),
@@ -2510,15 +2517,19 @@ window.addEventListener('DOMContentLoaded', () => {
 __webpack_require__.r(__webpack_exports__);
 class Difference {
   constructor(container, items, trigger) {
-    this.container = document.querySelector(container);
-    this.items = this.container.querySelectorAll(items);
-    this.btn = this.container.querySelector(trigger);
-    this.count = 0;
+    try {
+      this.container = document.querySelector(container);
+      this.items = this.container.querySelectorAll(items);
+      this.btn = this.container.querySelector(trigger);
+      this.count = 0;
+    } catch (err) {}
   }
 
   render() {
-    this.hideItems();
-    this.bindTrigger();
+    try {
+      this.hideItems();
+      this.bindTrigger();
+    } catch (err) {}
   }
 
   hideItems() {
@@ -2563,22 +2574,35 @@ class MainSlider extends _sliders__WEBPACK_IMPORTED_MODULE_0__["default"] {
   constructor(_ref) {
     let {
       container,
-      nextBtns
+      sideNextBtns,
+      prevBtn,
+      nextBtn
     } = _ref;
     super(container);
-    this.nextBtns = document.querySelectorAll(nextBtns);
+    this.sideNextBtns = document.querySelectorAll(sideNextBtns);
+    this.prevBtn = document.querySelectorAll(prevBtn);
+    this.nextBtn = document.querySelectorAll(nextBtn);
   }
 
   render() {
     try {
       this.hansonEl = document.querySelector('.hanson');
-    } catch (error) {// continue regardless of error
-    }
+    } catch (err) {}
 
-    this.nextBtns.forEach(btn => {
+    if (this.container) {
+      this.showSlides(this.slideIndex);
+      this.bindTriggers();
+    }
+  }
+
+  bindTriggers() {
+    this.sideNextBtns.forEach(btn => {
       btn.addEventListener('click', e => {
         e.preventDefault();
-        this.changeSlides(1);
+
+        if (this.container) {
+          this.changeSlides(1);
+        }
       });
       btn.parentNode.previousElementSibling.addEventListener('click', e => {
         e.preventDefault();
@@ -2586,7 +2610,18 @@ class MainSlider extends _sliders__WEBPACK_IMPORTED_MODULE_0__["default"] {
         this.showSlides(this.slideIndex);
       });
     });
-    this.showSlides(this.slideIndex);
+    this.prevBtn.forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        this.changeSlides(-1);
+      });
+    });
+    this.nextBtn.forEach(btn => {
+      btn.addEventListener('click', e => {
+        e.preventDefault();
+        this.changeSlides(1);
+      });
+    });
   }
 
   showSlides(n) {
@@ -2606,8 +2641,7 @@ class MainSlider extends _sliders__WEBPACK_IMPORTED_MODULE_0__["default"] {
           this.hansonEl.classList.remove('hide');
         }, 3000);
       }
-    } catch (error) {// continue regardless of error
-    }
+    } catch (err) {}
 
     this.slidesArr.forEach(slide => {
       slide.classList.add('animated', 'fadeIn');
@@ -2658,23 +2692,25 @@ class MiniSlider extends _sliders__WEBPACK_IMPORTED_MODULE_0__["default"] {
   }
 
   render() {
-    this.container.classList.add('slider-mini');
-    this.bindTriggers();
-    this.decorizeSlides();
+    try {
+      this.container.classList.add('slider-mini');
+      this.bindTriggers();
+      this.decorizeSlides();
 
-    if (this.autoplay) {
-      this.timerIntervalId = setInterval(() => {
-        this.nextSlide();
-      }, 2000);
-      this.container.addEventListener('mouseenter', () => {
-        clearInterval(this.timerIntervalId);
-      });
-      this.container.addEventListener('mouseleave', () => {
+      if (this.autoplay) {
         this.timerIntervalId = setInterval(() => {
           this.nextSlide();
         }, 2000);
-      });
-    }
+        this.container.addEventListener('mouseenter', () => {
+          clearInterval(this.timerIntervalId);
+        });
+        this.container.addEventListener('mouseleave', () => {
+          this.timerIntervalId = setInterval(() => {
+            this.nextSlide();
+          }, 2000);
+        });
+      }
+    } catch (error) {}
   }
 
   bindTriggers() {
@@ -2732,10 +2768,12 @@ __webpack_require__.r(__webpack_exports__);
 
 class Slider {
   constructor(container) {
-    this.container = document.querySelector(container);
-    this.slides = this.container.children;
-    this.slidesArr = [...this.slides];
-    this.slideIndex = 1;
+    try {
+      this.container = document.querySelector(container);
+      this.slideIndex = 1;
+      this.slides = this.container.children;
+      this.slidesArr = [...this.slides];
+    } catch (error) {}
   }
 
 }

@@ -1,14 +1,18 @@
 class Difference {
   constructor(container, items, trigger) {
-    this.container = document.querySelector(container)
-    this.items = this.container.querySelectorAll(items)
-    this.btn = this.container.querySelector(trigger)
-    this.count = 0
+    try {
+      this.container = document.querySelector(container)
+      this.items = this.container.querySelectorAll(items)
+      this.btn = this.container.querySelector(trigger)
+      this.count = 0
+    } catch (err) {}
   }
 
   render() {
-    this.hideItems()
-    this.bindTrigger()
+    try {
+      this.hideItems()
+      this.bindTrigger()
+    } catch (err) {}
   }
 
   hideItems() {

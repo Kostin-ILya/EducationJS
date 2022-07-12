@@ -12,25 +12,27 @@ class MiniSlider extends Slider {
   }
 
   render() {
-    this.container.classList.add('slider-mini')
+    try {
+      this.container.classList.add('slider-mini')
 
-    this.bindTriggers()
-    this.decorizeSlides()
+      this.bindTriggers()
+      this.decorizeSlides()
 
-    if (this.autoplay) {
-      this.timerIntervalId = setInterval(() => {
-        this.nextSlide()
-      }, 2000)
-
-      this.container.addEventListener('mouseenter', () => {
-        clearInterval(this.timerIntervalId)
-      })
-      this.container.addEventListener('mouseleave', () => {
+      if (this.autoplay) {
         this.timerIntervalId = setInterval(() => {
           this.nextSlide()
         }, 2000)
-      })
-    }
+
+        this.container.addEventListener('mouseenter', () => {
+          clearInterval(this.timerIntervalId)
+        })
+        this.container.addEventListener('mouseleave', () => {
+          this.timerIntervalId = setInterval(() => {
+            this.nextSlide()
+          }, 2000)
+        })
+      }
+    } catch (error) {}
   }
 
   bindTriggers() {

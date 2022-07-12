@@ -1,22 +1,32 @@
 import Slider from './sliders'
 
 class MainSlider extends Slider {
-  constructor({ container, nextBtns }) {
+  constructor({ container, sideNextBtns, prevBtn, nextBtn }) {
     super(container)
-    this.nextBtns = document.querySelectorAll(nextBtns)
+    this.sideNextBtns = document.querySelectorAll(sideNextBtns)
+    this.prevBtn = document.querySelectorAll(prevBtn)
+    this.nextBtn = document.querySelectorAll(nextBtn)
   }
 
   render() {
     try {
       this.hansonEl = document.querySelector('.hanson')
-    } catch (error) {
-      // continue regardless of error
-    }
+    } catch (err) {}
 
-    this.nextBtns.forEach((btn) => {
+    if (this.container) {
+      this.showSlides(this.slideIndex)
+      this.bindTriggers()
+    }
+  }
+
+  bindTriggers() {
+    this.sideNextBtns.forEach((btn) => {
       btn.addEventListener('click', (e) => {
         e.preventDefault()
-        this.changeSlides(1)
+
+        if (this.container) {
+          this.changeSlides(1)
+        }
       })
 
       btn.parentNode.previousElementSibling.addEventListener('click', (e) => {
@@ -26,7 +36,18 @@ class MainSlider extends Slider {
       })
     })
 
-    this.showSlides(this.slideIndex)
+    this.prevBtn.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault()
+        this.changeSlides(-1)
+      })
+    })
+    this.nextBtn.forEach((btn) => {
+      btn.addEventListener('click', (e) => {
+        e.preventDefault()
+        this.changeSlides(1)
+      })
+    })
   }
 
   showSlides(n) {
@@ -45,9 +66,7 @@ class MainSlider extends Slider {
           this.hansonEl.classList.remove('hide')
         }, 3000)
       }
-    } catch (error) {
-      // continue regardless of error
-    }
+    } catch (err) {}
 
     this.slidesArr.forEach((slide) => {
       slide.classList.add('animated', 'fadeIn')
