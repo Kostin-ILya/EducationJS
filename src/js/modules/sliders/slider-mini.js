@@ -1,4 +1,4 @@
-import Slider from './sliders'
+import Slider from './slider'
 
 class MiniSlider extends Slider {
   constructor({ container, next, prev, activeClass, animateElements = false, autoplay = false }) {

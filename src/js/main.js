@@ -2,6 +2,7 @@ import MainSlider from './modules/sliders/slider-main'
 import MiniSlider from './modules/sliders/slider-mini'
 import VideoPlayer from './modules/videoPlayer'
 import Difference from './modules/difference'
+import Form from './modules/form'
 
 window.addEventListener('DOMContentLoaded', () => {
   const mainPageSlider = new MainSlider({
@@ -47,4 +48,7 @@ window.addEventListener('DOMContentLoaded', () => {
   newOfficer.render()
 
   new VideoPlayer('.play', '.overlay').render()
+  new VideoPlayer('.module__video-item .play', '.overlay').render()
+
+  new Form('form').init()
 })

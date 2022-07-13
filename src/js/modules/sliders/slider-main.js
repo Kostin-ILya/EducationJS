@@ -1,4 +1,4 @@
-import Slider from './sliders'
+import Slider from './slider'
 
 class MainSlider extends Slider {
   constructor({ container, sideNextBtns, prevBtn, nextBtn }) {
