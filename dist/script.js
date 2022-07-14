@@ -3438,10 +3438,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_videoPlayer__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ./modules/videoPlayer */ "./src/js/modules/videoPlayer.js");
 /* harmony import */ var _modules_difference__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/difference */ "./src/js/modules/difference.js");
 /* harmony import */ var _modules_form__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/form */ "./src/js/modules/form.js");
+/* harmony import */ var _modules_accordion__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/accordion */ "./src/js/modules/accordion.js");
 
 
 
 
+
+ // import video from './modules/sliders/video'
 
 window.addEventListener('DOMContentLoaded', () => {
   const mainPageSlider = new _modules_sliders_slider_main__WEBPACK_IMPORTED_MODULE_0__["default"]({
@@ -3485,9 +3488,67 @@ window.addEventListener('DOMContentLoaded', () => {
   oldOfficer.render();
   newOfficer.render();
   new _modules_videoPlayer__WEBPACK_IMPORTED_MODULE_2__["default"]('.play', '.overlay').render();
-  new _modules_videoPlayer__WEBPACK_IMPORTED_MODULE_2__["default"]('.module__video-item .play', '.overlay').render();
+  new _modules_videoPlayer__WEBPACK_IMPORTED_MODULE_2__["default"]('.module__video-item .play', '.overlay').render(); // video('.play', '.overlay')
+
   new _modules_form__WEBPACK_IMPORTED_MODULE_4__["default"]('form').init();
+  new _modules_accordion__WEBPACK_IMPORTED_MODULE_5__["default"]('.module__info-show .plus').init();
 });
+
+/***/ }),
+
+/***/ "./src/js/modules/accordion.js":
+/*!*************************************!*\
+  !*** ./src/js/modules/accordion.js ***!
+  \*************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+class Accordion {
+  constructor(triggerSelector) {
+    this.btns = document.querySelectorAll(triggerSelector);
+  }
+
+  init() {
+    this.bindTriggers();
+  }
+
+  bindTriggers() {
+    this.btns.forEach(item => {
+      const iconCopy = item.querySelector('svg').firstElementChild.cloneNode(true);
+      item.addEventListener('click', () => {
+        const content = item.parentNode.nextElementSibling;
+        const icon = item.querySelector('svg').firstElementChild;
+
+        if (!content.classList.contains('active-class')) {
+          content.classList.add('active-class');
+          content.style.maxHeight = "".concat(content.scrollHeight, "px");
+          icon.remove();
+        } else {
+          content.classList.remove('active-class');
+          content.style.maxHeight = '';
+          item.querySelector('svg').prepend(iconCopy);
+        }
+      });
+    });
+  } // bindTriggers() {
+  //   this.btns.forEach((item) => {
+  //     const content = item.parentNode.nextElementSibling
+  //     item.addEventListener('click', () => {
+  //       if (!content.classList.contains('show')) {
+  //         content.classList.add('animated', 'fadeInDown', 'show')
+  //       } else {
+  //         content.classList.remove('show')
+  //       }
+  //     })
+  //   })
+  // }
+
+
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (Accordion);
 
 /***/ }),
 
@@ -3922,6 +3983,7 @@ class VideoPlayer {
     this.btns = document.querySelectorAll(triggersSelector);
     this.overlay = document.querySelector(overlaySelector);
     this.closeBtn = this.overlay.querySelector('.close');
+    this.onPlayerStateChange = this.onPlayerStateChange.bind(this);
   }
 
   render() {
@@ -3937,25 +3999,47 @@ class VideoPlayer {
     this.player = new YT.Player('iframe', {
       height: '100%',
       width: '100%',
-      videoId: url
+      videoId: url,
+      events: {
+        onStateChange: this.onPlayerStateChange
+      }
     });
+  }
+
+  onPlayerStateChange(event) {
+    try {
+      if (event.data === 0) {
+        const blockedElem = this.activeBtn.closest('.module__video-item').nextElementSibling;
+        const playIcon = this.activeBtn.querySelector('svg').cloneNode(true);
+        blockedElem.dataset.disabled = 'false';
+        blockedElem.style.opacity = '1';
+        blockedElem.style.filter = 'none';
+        blockedElem.querySelector('.play__text').classList.remove('attention');
+        blockedElem.querySelector('.play__text').textContent = 'play video';
+        blockedElem.querySelector('.play__circle').classList.remove('closed');
+        blockedElem.querySelector('.play__circle svg').remove();
+        blockedElem.querySelector('.play__circle').append(playIcon);
+      }
+    } catch (error) {}
   }
 
   bindTriggers() {
     this.btns.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        if (!btn.closest('.module__video-item') || btn.closest('.module__video-item').dataset.disabled !== 'true') {
+          this.overlay.classList.add('show-flex');
+          this.activeBtn = btn;
+          this.createPlayer(btn.dataset.url);
+        }
+      });
+
       try {
         const blockedElem = btn.closest('.module__video-item').nextElementSibling;
 
-        if (i % 2 == 0) {
-          blockedElem.setAttribute('data-disabled', 'true');
+        if (i % 2 === 0) {
+          blockedElem.dataset.disabled = 'true';
         }
-      } catch (e) {}
-
-      btn.addEventListener('click', () => {
-        this.overlay.classList.add('show-flex');
-        const path = btn.dataset.url;
-        this.createPlayer(path);
-      });
+      } catch (error) {}
     });
   }
 
@@ -3967,10 +4051,7 @@ class VideoPlayer {
         } catch (error) {}
 
         this.overlay.classList.remove('show-flex');
-        this.overlay.querySelector('#iframe').remove();
-        const block = document.createElement('div');
-        this.overlay.querySelector('.video').prepend(block);
-        block.id = 'iframe';
+        this.player.destroy();
       }
     };
 
