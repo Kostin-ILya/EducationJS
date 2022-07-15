@@ -4,7 +4,7 @@ import VideoPlayer from './modules/videoPlayer'
 import Difference from './modules/difference'
 import Form from './modules/form'
 import Accordion from './modules/accordion'
-// import video from './modules/sliders/video'
+import DownloadFile from './modules/downloadFile'
 
 window.addEventListener('DOMContentLoaded', () => {
   const mainPageSlider = new MainSlider({
@@ -49,12 +49,12 @@ window.addEventListener('DOMContentLoaded', () => {
   oldOfficer.render()
   newOfficer.render()
 
-  new VideoPlayer('.play', '.overlay').render()
-  new VideoPlayer('.module__video-item .play', '.overlay').render()
-
-  // video('.play', '.overlay')
+  new VideoPlayer('.play', '.overlay').init()
+  new VideoPlayer('.module__video-item .play', '.overlay').init()
 
   new Form('form').init()
 
   new Accordion('.module__info-show .plus').init()
+
+  new DownloadFile('.download').init()
 })

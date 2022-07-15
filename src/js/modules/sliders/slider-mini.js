@@ -42,7 +42,8 @@ class MiniSlider extends Slider {
     })
 
     this.prev.addEventListener('click', () => {
-      this.container.insertBefore(this.slides[this.slides.length - 1], this.slides[0])
+      // this.container.insertBefore(this.slides[this.slides.length - 1], this.slides[0])
+      this.container.prepend(this.slides[this.slides.length - 1])
       this.decorizeSlides()
       clearInterval(this.timerIntervalId)
     })

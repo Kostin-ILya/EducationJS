@@ -15,55 +15,7 @@ class Form {
     }
   }
 
-  init() {
-    this.bindForm()
-    this.checkMailInputs()
-    this.initPhoneMask()
-  }
-
-  bindForm() {
-    this.forms.forEach((item) => {
-      item.addEventListener('submit', (e) => {
-        e.preventDefault()
-
-        const statusBlock = document.createElement('div')
-        const statusMessage = document.createElement('div')
-        const statusImg = document.createElement('img')
-
-        statusBlock.classList.add('status', 'animated', 'fadeInUp')
-        document.querySelector('.overlay').classList.add('show')
-        statusImg.src = this.messages.spinner
-        statusMessage.textContent = this.messages.loading
-        statusBlock.append(statusMessage)
-        statusBlock.append(statusImg)
-        document.querySelector('.overlay').append(statusBlock)
-
-        const formData = new FormData(item)
-
-        this.postData(this.path.server, formData)
-          .then((data) => {
-            console.log(data)
-
-            statusImg.setAttribute('src', this.messages.ok)
-            statusMessage.textContent = this.messages.success
-          })
-          .catch(() => {
-            statusImg.setAttribute('src', this.messages.fail)
-            statusMessage.textContent = this.messages.failure
-          })
-          .finally(() => {
-            item.reset()
-
-            setTimeout(() => {
-              statusBlock.remove()
-              document.querySelector('.overlay').classList.remove('show')
-            }, 3000)
-          })
-      })
-    })
-  }
-
-  async postData(url, data) {
+  static async postData(url, data) {
     const response = await fetch(url, {
       method: 'POST',
       body: data,
@@ -73,15 +25,7 @@ class Form {
     return result
   }
 
-  checkMailInputs() {
-    this.mailInputs.forEach((item) => {
-      item.addEventListener('input', () => {
-        item.value = item.value.replace(/[а-я]/gim, '')
-      })
-    })
-  }
-
-  initPhoneMask() {
+  static initPhoneMask() {
     const inputs = document.querySelectorAll('[name="phone"]')
 
     function setCursorPosition(pos, elem) {
@@ -127,6 +71,62 @@ class Form {
       item.addEventListener('input', createMask)
       item.addEventListener('focus', createMask)
       item.addEventListener('blur', createMask)
+    })
+  }
+
+  init() {
+    this.bindForm()
+    this.checkMailInputs()
+    Form.initPhoneMask()
+  }
+
+  bindForm() {
+    this.forms.forEach((item) => {
+      item.addEventListener('submit', (e) => {
+        e.preventDefault()
+
+        const statusBlock = document.createElement('div')
+        const statusMessage = document.createElement('div')
+        const statusImg = document.createElement('img')
+
+        statusBlock.classList.add('status', 'animated', 'fadeInUp')
+        document.querySelector('.overlay').classList.add('show')
+        statusImg.src = this.messages.spinner
+        statusMessage.textContent = this.messages.loading
+        statusBlock.append(statusMessage)
+        statusBlock.append(statusImg)
+        document.querySelector('.overlay').append(statusBlock)
+
+        const formData = new FormData(item)
+
+        Form.postData(this.path.server, formData)
+          .then((data) => {
+            console.log(data)
+
+            statusImg.setAttribute('src', this.messages.ok)
+            statusMessage.textContent = this.messages.success
+          })
+          .catch(() => {
+            statusImg.setAttribute('src', this.messages.fail)
+            statusMessage.textContent = this.messages.failure
+          })
+          .finally(() => {
+            item.reset()
+
+            setTimeout(() => {
+              statusBlock.remove()
+              document.querySelector('.overlay').classList.remove('show')
+            }, 3000)
+          })
+      })
+    })
+  }
+
+  checkMailInputs() {
+    this.mailInputs.forEach((item) => {
+      item.addEventListener('input', () => {
+        item.value = item.value.replace(/[а-я]/gim, '')
+      })
     })
   }
 }

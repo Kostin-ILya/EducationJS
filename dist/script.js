@@ -3439,12 +3439,13 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _modules_difference__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./modules/difference */ "./src/js/modules/difference.js");
 /* harmony import */ var _modules_form__WEBPACK_IMPORTED_MODULE_4__ = __webpack_require__(/*! ./modules/form */ "./src/js/modules/form.js");
 /* harmony import */ var _modules_accordion__WEBPACK_IMPORTED_MODULE_5__ = __webpack_require__(/*! ./modules/accordion */ "./src/js/modules/accordion.js");
+/* harmony import */ var _modules_downloadFile__WEBPACK_IMPORTED_MODULE_6__ = __webpack_require__(/*! ./modules/downloadFile */ "./src/js/modules/downloadFile.js");
 
 
 
 
 
- // import video from './modules/sliders/video'
+
 
 window.addEventListener('DOMContentLoaded', () => {
   const mainPageSlider = new _modules_sliders_slider_main__WEBPACK_IMPORTED_MODULE_0__["default"]({
@@ -3487,11 +3488,11 @@ window.addEventListener('DOMContentLoaded', () => {
   const newOfficer = new _modules_difference__WEBPACK_IMPORTED_MODULE_3__["default"]('.officernew', '.officer__card-item', '.plus');
   oldOfficer.render();
   newOfficer.render();
-  new _modules_videoPlayer__WEBPACK_IMPORTED_MODULE_2__["default"]('.play', '.overlay').render();
-  new _modules_videoPlayer__WEBPACK_IMPORTED_MODULE_2__["default"]('.module__video-item .play', '.overlay').render(); // video('.play', '.overlay')
-
+  new _modules_videoPlayer__WEBPACK_IMPORTED_MODULE_2__["default"]('.play', '.overlay').init();
+  new _modules_videoPlayer__WEBPACK_IMPORTED_MODULE_2__["default"]('.module__video-item .play', '.overlay').init();
   new _modules_form__WEBPACK_IMPORTED_MODULE_4__["default"]('form').init();
   new _modules_accordion__WEBPACK_IMPORTED_MODULE_5__["default"]('.module__info-show .plus').init();
+  new _modules_downloadFile__WEBPACK_IMPORTED_MODULE_6__["default"]('.download').init();
 });
 
 /***/ }),
@@ -3604,6 +3605,41 @@ class Difference {
 
 /***/ }),
 
+/***/ "./src/js/modules/downloadFile.js":
+/*!****************************************!*\
+  !*** ./src/js/modules/downloadFile.js ***!
+  \****************************************/
+/*! exports provided: default */
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
+
+"use strict";
+__webpack_require__.r(__webpack_exports__);
+class DownloadFile {
+  constructor(triggerSelector) {
+    this.btns = document.querySelectorAll(triggerSelector);
+  }
+
+  init() {
+    this.bindTriggers();
+  }
+
+  bindTriggers() {
+    this.btns.forEach(item => {
+      item.addEventListener('click', () => {
+        const link = document.createElement('a');
+        link.href = 'assets/img/slide_1_m.jpg';
+        link.download = '';
+        link.click();
+      });
+    });
+  }
+
+}
+
+/* harmony default export */ __webpack_exports__["default"] = (DownloadFile);
+
+/***/ }),
+
 /***/ "./src/js/modules/form.js":
 /*!********************************!*\
   !*** ./src/js/modules/form.js ***!
@@ -3613,10 +3649,10 @@ class Difference {
 
 "use strict";
 __webpack_require__.r(__webpack_exports__);
-/* harmony import */ var core_js_modules_es_promise_finally_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.promise.finally.js */ "./node_modules/core-js/modules/es.promise.finally.js");
-/* harmony import */ var core_js_modules_es_promise_finally_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_promise_finally_js__WEBPACK_IMPORTED_MODULE_0__);
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
-/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_1__);
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! core-js/modules/es.string.replace.js */ "./node_modules/core-js/modules/es.string.replace.js");
+/* harmony import */ var core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_0___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_string_replace_js__WEBPACK_IMPORTED_MODULE_0__);
+/* harmony import */ var core_js_modules_es_promise_finally_js__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! core-js/modules/es.promise.finally.js */ "./node_modules/core-js/modules/es.promise.finally.js");
+/* harmony import */ var core_js_modules_es_promise_finally_js__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(core_js_modules_es_promise_finally_js__WEBPACK_IMPORTED_MODULE_1__);
 
 
 
@@ -3637,46 +3673,7 @@ class Form {
     };
   }
 
-  init() {
-    this.bindForm();
-    this.checkMailInputs();
-    this.initPhoneMask();
-  }
-
-  bindForm() {
-    this.forms.forEach(item => {
-      item.addEventListener('submit', e => {
-        e.preventDefault();
-        const statusBlock = document.createElement('div');
-        const statusMessage = document.createElement('div');
-        const statusImg = document.createElement('img');
-        statusBlock.classList.add('status', 'animated', 'fadeInUp');
-        document.querySelector('.overlay').classList.add('show');
-        statusImg.src = this.messages.spinner;
-        statusMessage.textContent = this.messages.loading;
-        statusBlock.append(statusMessage);
-        statusBlock.append(statusImg);
-        document.querySelector('.overlay').append(statusBlock);
-        const formData = new FormData(item);
-        this.postData(this.path.server, formData).then(data => {
-          console.log(data);
-          statusImg.setAttribute('src', this.messages.ok);
-          statusMessage.textContent = this.messages.success;
-        }).catch(() => {
-          statusImg.setAttribute('src', this.messages.fail);
-          statusMessage.textContent = this.messages.failure;
-        }).finally(() => {
-          item.reset();
-          setTimeout(() => {
-            statusBlock.remove();
-            document.querySelector('.overlay').classList.remove('show');
-          }, 3000);
-        });
-      });
-    });
-  }
-
-  async postData(url, data) {
+  static async postData(url, data) {
     const response = await fetch(url, {
       method: 'POST',
       body: data
@@ -3685,15 +3682,7 @@ class Form {
     return result;
   }
 
-  checkMailInputs() {
-    this.mailInputs.forEach(item => {
-      item.addEventListener('input', () => {
-        item.value = item.value.replace(/[а-я]/gim, '');
-      });
-    });
-  }
-
-  initPhoneMask() {
+  static initPhoneMask() {
     const inputs = document.querySelectorAll('[name="phone"]');
 
     function setCursorPosition(pos, elem) {
@@ -3736,6 +3725,53 @@ class Form {
       item.addEventListener('input', createMask);
       item.addEventListener('focus', createMask);
       item.addEventListener('blur', createMask);
+    });
+  }
+
+  init() {
+    this.bindForm();
+    this.checkMailInputs();
+    Form.initPhoneMask();
+  }
+
+  bindForm() {
+    this.forms.forEach(item => {
+      item.addEventListener('submit', e => {
+        e.preventDefault();
+        const statusBlock = document.createElement('div');
+        const statusMessage = document.createElement('div');
+        const statusImg = document.createElement('img');
+        statusBlock.classList.add('status', 'animated', 'fadeInUp');
+        document.querySelector('.overlay').classList.add('show');
+        statusImg.src = this.messages.spinner;
+        statusMessage.textContent = this.messages.loading;
+        statusBlock.append(statusMessage);
+        statusBlock.append(statusImg);
+        document.querySelector('.overlay').append(statusBlock);
+        const formData = new FormData(item);
+        Form.postData(this.path.server, formData).then(data => {
+          console.log(data);
+          statusImg.setAttribute('src', this.messages.ok);
+          statusMessage.textContent = this.messages.success;
+        }).catch(() => {
+          statusImg.setAttribute('src', this.messages.fail);
+          statusMessage.textContent = this.messages.failure;
+        }).finally(() => {
+          item.reset();
+          setTimeout(() => {
+            statusBlock.remove();
+            document.querySelector('.overlay').classList.remove('show');
+          }, 3000);
+        });
+      });
+    });
+  }
+
+  checkMailInputs() {
+    this.mailInputs.forEach(item => {
+      item.addEventListener('input', () => {
+        item.value = item.value.replace(/[а-я]/gim, '');
+      });
     });
   }
 
@@ -3906,7 +3942,8 @@ class MiniSlider extends _slider__WEBPACK_IMPORTED_MODULE_0__["default"] {
       clearInterval(this.timerIntervalId);
     });
     this.prev.addEventListener('click', () => {
-      this.container.insertBefore(this.slides[this.slides.length - 1], this.slides[0]);
+      // this.container.insertBefore(this.slides[this.slides.length - 1], this.slides[0])
+      this.container.prepend(this.slides[this.slides.length - 1]);
       this.decorizeSlides();
       clearInterval(this.timerIntervalId);
     });
@@ -3986,7 +4023,7 @@ class VideoPlayer {
     this.onPlayerStateChange = this.onPlayerStateChange.bind(this);
   }
 
-  render() {
+  init() {
     const tag = document.createElement('script');
     const firstScriptTag = document.getElementsByTagName('script')[0];
     tag.src = 'https://www.youtube.com/iframe_api';

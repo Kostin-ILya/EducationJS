@@ -6,7 +6,7 @@ class VideoPlayer {
     this.onPlayerStateChange = this.onPlayerStateChange.bind(this)
   }
 
-  render() {
+  init() {
     const tag = document.createElement('script')
     const firstScriptTag = document.getElementsByTagName('script')[0]
     tag.src = 'https://www.youtube.com/iframe_api'
