@@ -3621,10 +3621,13 @@ class DownloadFile {
 
   init() {
     this.bindTriggers();
+    const elem = document.querySelector('.book__cover'); // const style = getComputedStyle(elem)
   }
 
   bindTriggers() {
     this.btns.forEach(item => {
+      // item.style.cssText = 'width: 100px; background-color: red; color: yellow;'
+      // console.log(getComputedStyle(item))
       item.addEventListener('click', () => {
         const link = document.createElement('a');
         link.href = 'assets/img/slide_1_m.jpg';
